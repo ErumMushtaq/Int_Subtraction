@@ -1,6 +1,6 @@
 # Int_Subtraction
 
-Noise Subtraction is the main file.
+Demo file is the main file.
 
 It performs the following tasks:
 
@@ -12,7 +12,7 @@ It performs the following tasks:
      
      4) Interference signals are BPSK signals.
 
-Noise Subtraction file is dependent on the following functions
+Demo file file is dependent on the following functions
 
      1) Sense R1 to perform optimal coil combination
      
