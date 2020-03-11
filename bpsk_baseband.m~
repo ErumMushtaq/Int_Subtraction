@@ -1,0 +1,38 @@
+function output = bpsk_baseband(N, fc, T )
+
+%% Input signal
+Baseband_signal = (randn(96,1)>0);
+T = 0.000004; % Bit duration 4 micro second
+Nsb = 1/T;  % Create Sequence of specific length corresponding T length duration.
+for kk = 1:1:length(Baseband_signal)
+if kk ==1
+dd = (repmat(Baseband_signal(kk),1,Nsb)); % replicate each bit Nsb times
+else
+dd = [dd (repmat(Baseband_signal(kk),1,Nsb))];
+end
+end
+figure;plot([16.0000e-12:16.0000e-12:96*0.000004],dd);
+xlabel('t (sec)');
+ylabel('Magnitude'); title('I(t) Before Sampling');
+ylim([-2 2]);
+hold on;
+%% Sampling of the rectangular pulse
+New_dd = dd(1:1/T:end);
+scatter([T/2:1*T:96*T],New_dd, '*');
+xlabel('t (sec)');
+ylabel('Magnitude'); title('I(t)');
+ylim([-0.5 1.5]);
+xlim([0 96*T]);
+legend('Baseband Signal','Sampled Signal');
+%% Signal Spectrum
+Spectrum = fft2c(New_dd);
+figure;plot([-95/(2*T):1/T:96/(2*T)],(abs(Spectrum))/length(Spectrum));
+xlabel('f (Hz)');
+ylabel('Magnitude'); title('I(f)');
+xtickformat('%.1f') 
+ax = gca;
+ax.XAxis.Exponent = 6;
+
+output = 100*(Spectrum);
+%figure;plot([1:250000:96*250000],abs(output));
+end

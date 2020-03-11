@@ -1,0 +1,38 @@
+clear all; close all;
+pfilePath = '/Users/erummushtaq/Desktop/Interference_subtraction/Int_Subtraction/P43520.7';
+%% Load Pfile
+pfile = GERecon('Pfile.Load', pfilePath);
+header = GERecon('Pfile.Header', pfile);
+%% Extract Parameters
+nvx = pfile.xRes;
+nvy = pfile.yRes;
+nt = pfile.slices;
+nc = pfile.channels;
+fov = header.RawHeader.fov;
+%% Load k-space data
+for t = 1:nt
+  for c = 1:nc
+    data(:,:,t,c) = GERecon('Pfile.KSpace', t, 1, c);
+  end
+end
+%% Image Reconstruction
+p_data = data;
+%p_data(:,:,:,:) = permute(data(:, :, :, :), [1 2 4 3]);
+Image = ifft2c(p_data);
+%B = reshape(abs(Image(70,:,:,:)), [nvx, nvy*nc]);
+%montage(Image(:,:,70,:));
+data1 = p_data(:,:,70,:);
+try_data     = reshape(data1,[nvx nvy 1 1 nc]);
+% cmaps = senseMap(Image(70,:,:,:), 7);  %estimates coil sensitivity maps from the images
+% montage(abs(cmaps));
+% % for idx=1:1
+% %          ImgR(:,:,idx) = senseR1(ImgR1(:,:,:,idx), cmaps, eye(ncc));
+% % end
+% imagesc(abs(B));  colormap gray; axis image;
+smaps = GRcoilsens(try_data,[]);
+cmaps(:,:,1:1:nc) = fftshift(double(smaps(:,:,1,1,:)));
+figure;montage(abs(cmaps));
+figure;montage(ifft2c(data1));
+
+%C = reshape(smaps, [nvx, nvy*nc]);
+%imagesc(abs(C));  colormap gray; axis image;
