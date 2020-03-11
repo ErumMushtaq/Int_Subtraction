@@ -7,11 +7,8 @@ load('cmaps.mat');
 st = kspace;
 si = 1;
 ns = 4; % Size of sniffer Coil
-Amp = 1; % use if need to change Amplitude of Interferer
+Amp = 1; % change Amplitude of Interferer
 % Channels without path loss
-index = 1;
-%for Amp = 1:20:200
-
 wH = randn(nc, si) + i*randn(nc, si);
 wG = randn(nc, si) + i*randn(nc, si);
 %% Plots
@@ -32,7 +29,7 @@ wI(1,:) = bpsk_baseband(96, T, Amp);
 % title('S(f)'); grid on; ax = gca; ax.XAxis.Exponent = 0;
 coil_sens = FS_cmaps;
 %% Calibration Phase
- wI(1,:) = bpsk_baseband(nvx, T, Amp);
+ wI(1,:) = bpsk_baseband(nvx, T);
 % Channels H(w) & G(w)
  si = size(wI,1); % number of interferes
  wS = wG * wI(:,50);
@@ -61,11 +58,6 @@ coil_sens = FS_cmaps;
  img_org(:,:) = senseR1((ifft2c(ifft2c(M(:,:,:)))), coil_sens, eye(nc));
  img_int(:,:) = senseR1((ifft2c(ifft2c(e_Tnew(:,:,:)))), coil_sens, eye(nc));
  img_est(:,:) = senseR1((ifft2c(ifft2c(e_TPseudo_inv(:,:,:)))), coil_sens, eye(nc));
- %Difference(index) = (img_org(:,:)-img_est(:,:));
- %Difference(index) = (norm(img_org(:,:)-img_est(:,:))/norm(img_org(:,:)));
- index = index +1;
- clear wI;
-%end
  figure;
  subplot(3,8,1);imagesc(abs(coil_sens(:,:,1))); axis square; title('Coil Sensitivity Map 1'); axis off;colormap gray;
  subplot(3,8,2);imagesc(abs(coil_sens(:,:,2))); axis square; title('Coil Sensitivity Map 2'); axis off;colormap gray;
@@ -102,14 +94,14 @@ figure;
  subplot(2,3,4);imagesc(abs((img_org(:,:)))); axis square; title('Interference Off'); axis off;
  subplot(2,3,5);imagesc(abs((img_est(:,:)))); axis square; title('Estimated Image (Coil Combined)'); axis off;colormap gray;
  subplot(2,3,6);imagesc(abs((img_org(:,:)-img_est(:,:)))); axis square; title('Difference'); axis off;
-%  figure;
-%  Im = ifft2c(ifft2c(M));
-%  subplot(1,5,1);imagesc(abs(Im(:,:,1))); axis square; title('Coil 1 Image'); axis off;colormap gray;
-%  subplot(1,5,2);imagesc(abs(Im(:,:,2))); axis square; title('Coil 2 Image'); axis off;colormap gray;
-%  subplot(1,5,3);imagesc(abs(Im(:,:,3))); axis square; title('Coil 3 Image'); axis off;colormap gray;
-%  subplot(1,5,4);imagesc(abs(Im(:,:,1))); axis square; title('Coil 4 Image'); axis off;colormap gray;
-%  subplot(1,5,5);imagesc(abs(img_org(:,:,1))); axis square; title('Coil 1 Image'); axis off;colormap gray;
-% 
+ figure;
+ Im = ifft2c(ifft2c(M));
+ subplot(1,5,1);imagesc(abs(Im(:,:,1))); axis square; title('Coil 1 Image'); axis off;colormap gray;
+ subplot(1,5,2);imagesc(abs(Im(:,:,2))); axis square; title('Coil 2 Image'); axis off;colormap gray;
+ subplot(1,5,3);imagesc(abs(Im(:,:,3))); axis square; title('Coil 3 Image'); axis off;colormap gray;
+ subplot(1,5,4);imagesc(abs(Im(:,:,1))); axis square; title('Coil 4 Image'); axis off;colormap gray;
+ subplot(1,5,5);imagesc(abs(img_org(:,:,1))); axis square; title('Coil 1 Image'); axis off;colormap gray;
+
 
 % 
 % 
